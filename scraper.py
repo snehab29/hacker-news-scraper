@@ -1,11 +1,20 @@
+# Grab the page
 import requests
 from bs4 import BeautifulSoup
 
-url = "https://news.ycombinator.com/"
+
+url = "https://quotes.toscrape.com/"
+
 response = requests.get(url)
+html = response.text
 
-soup = BeautifulSoup(response.text, "html.parser")
-titles = soup.select(".titleline a")
+soup = BeautifulSoup(html, 'html.parser') #magnifying glass that organizes the html page
 
-for i, title in enumerate(titles[:10], 1):
-    print(f"{i}. {title.get_text()} ({title['href']})")
+problems = soup.find_all("span", class_="text")
+
+authors = soup.find_all("small", class_="author")
+
+for problem, author_item in zip(problems, authors):
+    title = problem.get_text().strip()
+    link = author_item.get_text().strip()
+    print(f"{title}: {link}")
